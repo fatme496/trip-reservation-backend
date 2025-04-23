@@ -1,5 +1,4 @@
 import express from "express";
-import mongoose from 'mongoose';
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
@@ -7,6 +6,8 @@ import tripRoutes from './routes/tripRoutes.js';
 import cookieParser from "cookie-parser";
 import userRoutes from './routes/userRoutes.js';
 import authRoutes from "./routes/authRoutes.js";
+
+import reservationRoutes from './routes/reservationRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -26,6 +27,8 @@ app.get("/", (req, res) => {
 app.use('/api/trips', tripRoutes);
 app.use("/api/users", authRoutes);
 app.use('/api/admin', userRoutes);
+
+app.use('/api/reservations', reservationRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
