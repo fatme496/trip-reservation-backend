@@ -5,7 +5,7 @@ import Location from '../models/Location.js';
 // Create a new trip
 export const createTrip = async (req, res) => {
     try {
-        const { title, description, locations, startDate, endDate, price } = req.body;
+        const { title, description, locations, startDate, endDate, price, availableSlots, category } = req.body;
         const newTrip = new Trip({
             title,
             description,
@@ -13,6 +13,8 @@ export const createTrip = async (req, res) => {
             startDate,
             endDate,
             price,
+            availableSlots,
+            category,
             createdBy: req.user.id  // Assuming the user is attached to the request after authentication
         });
 
@@ -73,10 +75,10 @@ export const getTripById = async (req, res) => {
 // Update a trip by ID
 export const updateTrip = async (req, res) => {
     try {
-        const { title, description, locations, startDate, endDate, price } = req.body;
+        const { title, description, locations, startDate, endDate, price, availableSlots, category } = req.body;
         const updatedTrip = await Trip.findByIdAndUpdate(
             req.params.tripId,
-            { title, description, locations, startDate, endDate, price },
+            { title, description, locations, startDate, endDate, price, availableSlots, category },
             { new: true }
         );
 

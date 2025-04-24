@@ -1,11 +1,17 @@
 import Category from '../models/Category.js';
 
-// Create a category
+// Create a new category
 export const createCategory = async (req, res) => {
   try {
-    const { name } = req.body;
-    const category = new Category({ name });
-    await category.save();
+    const { name, description, image } = req.body;
+    
+    const newCategory = new Category({
+      name,
+      description,
+      image
+    });
+
+    const category = await newCategory.save();
     res.status(201).json({
       data: category,
       message: "Category created successfully"
@@ -20,9 +26,10 @@ export const createCategory = async (req, res) => {
 };
 
 // Get all categories
-export const getAllCategories = async (req, res) => {
+export const getCategories = async (req, res) => {
   try {
-    const categories = await Category.find().sort({ name: 1 });
+    const categories = await Category.find().populate('trips'); // Populating trips to show associated trips
+
     res.status(200).json({
       data: categories,
       message: "Categories retrieved successfully"
@@ -30,30 +37,56 @@ export const getAllCategories = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       data: null,
-      message: "Categories cannot be displayed",
+      message: "Failed to retrieve categories",
       error: error.message
     });
   }
 };
 
-// Update category
-export const updateCategory = async (req, res) => {
+// Get a single category by ID
+export const getCategoryById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name } = req.body;
-    const updated = await Category.findByIdAndUpdate(
-      id,
-      { name },
-      { new: true, runValidators: true }
-    );
-    if (!updated) {
+    const category = await Category.findById(req.params.id).populate('trips');
+
+    if (!category) {
       return res.status(404).json({
         data: null,
         message: "Category not found"
       });
     }
+
     res.status(200).json({
-      data: updated,
+      data: category,
+      message: "Category retrieved successfully"
+    });
+  } catch (error) {
+    res.status(500).json({
+      data: null,
+      message: "Failed to retrieve category",
+      error: error.message
+    });
+  }
+};
+
+// Update a category
+export const updateCategory = async (req, res) => {
+  try {
+    const { name, description, image, isActive } = req.body;
+    const updatedCategory = await Category.findByIdAndUpdate(
+      req.params.id,
+      { name, description, image, isActive },
+      { new: true }
+    );
+
+    if (!updatedCategory) {
+      return res.status(404).json({
+        data: null,
+        message: "Category not found"
+      });
+    }
+
+    res.status(200).json({
+      data: updatedCategory,
       message: "Category updated successfully"
     });
   } catch (error) {
@@ -65,23 +98,24 @@ export const updateCategory = async (req, res) => {
   }
 };
 
-// Delete category
+// Delete a category
 export const deleteCategory = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deleted = await Category.findByIdAndDelete(id);
-    if (!deleted) {
+    const deletedCategory = await Category.findByIdAndDelete(req.params.id);
+
+    if (!deletedCategory) {
       return res.status(404).json({
         data: null,
         message: "Category not found"
       });
     }
+
     res.status(200).json({
-      data: deleted,
+      data: deletedCategory,
       message: "Category deleted successfully"
     });
   } catch (error) {
-    res.status(400).json({
+    res.status(500).json({
       data: null,
       message: "Failed to delete category",
       error: error.message
