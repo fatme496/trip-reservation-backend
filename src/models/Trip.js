@@ -28,6 +28,15 @@ const tripSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  availableSlots:{
+    type: Number,
+    required: true
+  },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    required: true
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
