@@ -1,35 +1,47 @@
 // controllers/tripController.js
 import Trip from '../models/Trip.js';
+import Location from '../models/Location.js';
 
 // Create a new trip
 export const createTrip = async (req, res) => {
     try {
-        const newTrip = new Trip(req.body);
-        const savedTrip = await newTrip.save();
-        res.status(201).json(
-            {
-                data: savedTrip,
-                message: "trip created successfully"
-            });
+        const { title, description, locations, startDate, endDate, price } = req.body;
+        const newTrip = new Trip({
+            title,
+            description,
+            locations,
+            startDate,
+            endDate,
+            price,
+            createdBy: req.user.id  // Assuming the user is attached to the request after authentication
+        });
+
+        const trip = await newTrip.save();
+        res.status(201).json({
+            data: trip,
+            message: "Trip created successfully"
+        });
     } catch (error) {
-        res.status(500).json({
-            message: "Error creating trip",
+        res.status(400).json({
+            data: null,
+            message: "Failed to create trip",
             error: error.message
         });
     }
 };
 
 // Get all trips
-export const getAllTrips = async (req, res) => {
+export const getTrips = async (req, res) => {
     try {
-        const trips = await Trip.find();
+        const trips = await Trip.find().populate('locations');
         res.status(200).json({
             data: trips,
             message: "Trips retrieved successfully"
         });
     } catch (error) {
         res.status(500).json({
-            message: "Trips cannot be displayed",
+            data: null,
+            message: "Error retrieving trips",
             error: error.message
         });
     }
@@ -38,49 +50,75 @@ export const getAllTrips = async (req, res) => {
 // Get a single trip by ID
 export const getTripById = async (req, res) => {
     try {
-        const trip = await Trip.findById(req.params.id);
-        if (!trip) return res.status(404).json({ message: 'Trip not found' });
+        const trip = await Trip.findById(req.params.tripId).populate('locations');
+        if (!trip) {
+            return res.status(404).json({
+                data: null,
+                message: "Trip not found"
+            });
+        }
         res.status(200).json({
             data: trip,
             message: "Trip retrieved successfully"
         });
     } catch (error) {
         res.status(500).json({
-            message: "Trip cannot be displayed",
+            data: null,
+            message: "Error retrieving trip",
             error: error.message
         });
     }
 };
 
-// Update a trip
+// Update a trip by ID
 export const updateTrip = async (req, res) => {
     try {
-        const updatedTrip = await Trip.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true,
-        });
-        if (!updatedTrip) return res.status(404).json({ message: 'Trip not found' });
+        const { title, description, locations, startDate, endDate, price } = req.body;
+        const updatedTrip = await Trip.findByIdAndUpdate(
+            req.params.tripId,
+            { title, description, locations, startDate, endDate, price },
+            { new: true }
+        );
+
+        if (!updatedTrip) {
+            return res.status(404).json({
+                data: null,
+                message: "Trip not found"
+            });
+        }
+
         res.status(200).json({
             data: updatedTrip,
             message: "Trip updated successfully"
         });
     } catch (error) {
-        res.status(500).json({
-            message: "An error occurred while updating the trip",
+        res.status(400).json({
+            data: null,
+            message: "Failed to update trip",
             error: error.message
         });
     }
 };
 
-// Delete a trip
+// Delete a trip by ID
 export const deleteTrip = async (req, res) => {
     try {
-        const deletedTrip = await Trip.findByIdAndDelete(req.params.id);
-        if (!deletedTrip) return res.status(404).json({ message: 'Trip not found' });
-        res.status(200).json({ data: deleteTrip, message: 'Trip deleted successfully' });
+        const deletedTrip = await Trip.findByIdAndDelete(req.params.tripId);
+        if (!deletedTrip) {
+            return res.status(404).json({
+                data: null,
+                message: "Trip not found"
+            });
+        }
+        res.status(200).json({
+            data: null,
+            message: "Trip deleted successfully"
+        });
     } catch (error) {
-        res.status(500).json({ 
-            message: "An error occurred while deleting the trip",
-            error: error.message });
+        res.status(500).json({
+            data: null,
+            message: "Failed to delete trip",
+            error: error.message
+        });
     }
 };

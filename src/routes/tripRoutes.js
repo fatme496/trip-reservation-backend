@@ -1,29 +1,20 @@
-// routes/tripRoutes.js
 import express from 'express';
 import {
   createTrip,
-  getAllTrips,
+  getTrips,
   getTripById,
   updateTrip,
-  deleteTrip,
+  deleteTrip
 } from '../controllers/tripController.js';
 import { verifyToken, checkRole } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// POST /api/trips - Create a new trip
-router.post('/',verifyToken, checkRole(['super_admin', 'admin']), createTrip);
-
-// GET /api/trips - Get all trips
-router.get('/', getAllTrips);
-
-// GET /api/trips/:id - Get a specific trip by ID
-router.get('/:id', getTripById);
-
-// PUT /api/trips/:id - Update a trip
-router.put('/:id',verifyToken, checkRole(['super_admin', 'admin']), updateTrip);
-
-// DELETE /api/trips/:id - Delete a trip
-router.delete('/:id',verifyToken, checkRole(['super_admin', 'admin']), deleteTrip);
+// Routes for managing trips
+router.get('/', verifyToken, getTrips);  // Get all trips
+router.get('/:tripId', verifyToken, getTripById);  // Get trip by ID
+router.post('/', verifyToken, checkRole(['admin', 'super_admin']), createTrip);  // Create a new trip
+router.put('/:tripId', verifyToken, checkRole(['admin', 'super_admin']), updateTrip);  // Update trip by ID
+router.delete('/:tripId', verifyToken, checkRole(['admin', 'super_admin']), deleteTrip);  // Delete trip by ID
 
 export default router;
