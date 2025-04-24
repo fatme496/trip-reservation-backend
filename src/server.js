@@ -9,6 +9,7 @@ import authRoutes from "./routes/authRoutes.js";
 
 import reservationRoutes from './routes/reservationRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
+import imageRoutes from './routes/imageRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -31,6 +32,7 @@ app.use('/api/admin', userRoutes);
 
 app.use('/api/reservations', reservationRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/images', imageRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
