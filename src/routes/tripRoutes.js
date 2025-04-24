@@ -15,10 +15,10 @@ const router = express.Router();
 router.post('/',verifyToken, checkRole(['super_admin', 'admin']), createTrip);
 
 // GET /api/trips - Get all trips
-router.get('/',verifyToken, getAllTrips);
+router.get('/', getAllTrips);
 
 // GET /api/trips/:id - Get a specific trip by ID
-router.get('/:id',verifyToken, getTripById);
+router.get('/:id', getTripById);
 
 // PUT /api/trips/:id - Update a trip
 router.put('/:id',verifyToken, checkRole(['super_admin', 'admin']), updateTrip);
