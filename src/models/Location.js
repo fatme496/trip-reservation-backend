@@ -20,7 +20,8 @@ const locationSchema = new mongoose.Schema({
       type: Number,
       required: true
     }
-  }
+  },
+  trips: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Trips' }] // Array of references to the Trip model
 }, { timestamps: true });
 
 const Location = mongoose.model('Location', locationSchema);
