@@ -18,7 +18,7 @@ const app = express();
 // Middleware
 const allowedOrigins = [
   "http://localhost:3000", 
-   "https://financial-tracker-frontend-six.vercel.app", 
+   "https://trip-in-lebanon.vercel.app", 
 ];
 app.use(
   cors({
