@@ -16,10 +16,16 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true
-}));
+const allowedOrigins = [
+  "http://localhost:3000", 
+   "https://financial-tracker-frontend-six.vercel.app", 
+];
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,  
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
