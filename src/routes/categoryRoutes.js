@@ -5,7 +5,7 @@ import { verifyToken, checkRole } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 // Create a new category
-router.post('/', verifyToken, checkRole(['super_admin']), createCategory);
+router.post('/', verifyToken, createCategory);
 
 // Get all categories
 router.get('/', getCategories);

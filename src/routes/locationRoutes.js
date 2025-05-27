@@ -12,8 +12,8 @@ const router = express.Router();
 
 router.get('/', verifyToken, getLocations);
 router.get('/:id', verifyToken, getLocationById);
-router.post('/', verifyToken, checkRole(['admin', 'super_admin']), createLocation);
-router.put('/:id', verifyToken, checkRole(['admin', 'super_admin']), updateLocation);
-router.delete('/:id', verifyToken, checkRole(['admin', 'super_admin']), deleteLocation);
+router.post('/', verifyToken, createLocation);
+router.put('/:id', verifyToken, updateLocation);
+router.delete('/:id', verifyToken, deleteLocation);
 
 export default router;
